@@ -42,8 +42,8 @@ const Posts = sequelize.define(
 
 );
 
-Author.hasMany(Posts),
-Posts.belongsTo(Author)
+Author.hasMany(Posts, { foreignKey: 'author_id' })
+Posts.belongsTo(Author, { foreignKey: 'author_id' })
 
 Posts.sync()
   .then((data) => {

@@ -1,8 +1,10 @@
 const express = require('express');
 const { Sequelize } = require("sequelize");
 const Author = require('../models/authorModels')
-const Posts = require('../models/postsModel')
+const  Posts  = require('../models/postsModel')
 const asyncHandler = require('../utils/AsyncHandler')
+const ApiError=require('../utils/ApiError')
+const sequelize = require("../index");
 
 
 
@@ -33,4 +35,15 @@ const newPost= asyncHandler(async(req,res) => {
 
 })
 
-module.exports = newPost
+  const getPosts= asyncHandler(async(req,res) => {
+  try {
+    console.log('Fetching posts...');
+    const posts = await Posts.findAll();
+    console.log('Posts fetched:', posts);
+     res.json(posts);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error fetching posts' });
+  }
+})
+module.exports = [newPost,getPosts]

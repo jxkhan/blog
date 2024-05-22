@@ -37,48 +37,50 @@ const getPosts = asyncHandler(async (req, res) => {
   const posts = await Posts.findAll();
   console.log("Posts fetched:", posts);
   res.json(posts);
-  if(!posts)
-  {
+  if (!posts) {
     throw new ApiError(500, "Error fetching posts");
     //res.status(500).json({ message: 'Error fetching posts' });
   }
 });
 
 const getSinglePost = asyncHandler(async (req, res) => {
-  
-    const post_id = req.params.id;
-    const post = await Posts.findByPk(post_id);
-    console.log("post", post_id)
-    if (post) {
-      res.json(post);
-    } else {
-      //throw new ApiError(404, "Post not found")
-      console.error(`Post with ID ${post_id} not found`);
-      return res.status(404).json({ message: 'Error fetching post' });
-    }
-  
+  const post_id = req.params.id;
+  const post = await Posts.findByPk(post_id);
+  console.log("post", post_id);
+  if (post) {
+    res.json(post);
+  } else {
+    //throw new ApiError(404, "Post not found")
+    console.error(`Post with ID ${post_id} not found`);
+    return res.status(404).json({ message: "Error fetching post" });
+  }
 });
 
 const updatePost = asyncHandler(async (req, res) => {
-
   const post_id = req.params.id;
-    const postToUpdate = await Posts.findByPk(post_id);
-    if (!postToUpdate) {
-      //return res.status(404).json({ message: 'Post not found' });
-      throw new ApiError(404,"Post not found")
-    }
-    const { title, content } = req.body;
-    if (!title || !content) {
-      //return res.status(400).json({ message: 'Title and content are required' });
-      throw new ApiError(400,"Title and content are required")
-    }
-    postToUpdate.title = title;
-    postToUpdate.content = content;
-    await postToUpdate.save();
-    res.json(postToUpdate);
-    
-  
+  const postToUpdate = await Posts.findByPk(post_id);
+  if (!postToUpdate) {
+    //return res.status(404).json({ message: 'Post not found' });
+    throw new ApiError(404, "Post not found");
+  }
+  const { title, content } = req.body;
+  if (!title || !content) {
+    //return res.status(400).json({ message: 'Title and content are required' });
+    throw new ApiError(400, "Title and content are required");
+  }
+  postToUpdate.title = title;
+  postToUpdate.content = content;
+  await postToUpdate.save();
+  res.json(postToUpdate);
+});
 
-
-})
-module.exports = [newPost, getPosts, getSinglePost,updatePost];
+const deletePost = asyncHandler(async (req, res) => {
+  const post_id = req.params.id;
+  const postToDelete = await Posts.findByPk(post_id);
+  if (!postToDelete) {
+    throw new ApiError(404, "Post not found");
+  }
+  await postToDelete.destroy();
+  res.json({ message: "Post deleted successfully" });
+});
+module.exports = [newPost, getPosts, getSinglePost, updatePost, deletePost];

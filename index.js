@@ -1,13 +1,18 @@
 // const { Sequelize } = require("sequelize");
 
-const { Sequelize } = require('sequelize');
-require('dotenv').config()
+const { Sequelize } = require("sequelize");
+require("dotenv").config();
 
-const sequelize = new Sequelize(process.env.DB, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
-  host: "localhost",
-  port: process.env.DB_PORT,
-  dialect: "mysql",
-});
+const sequelize = new Sequelize(
+  process.env.DB,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
+  {
+    host: "localhost",
+    port: process.env.DB_PORT,
+    dialect: "mysql",
+  },
+);
 
 try {
   sequelize.authenticate();

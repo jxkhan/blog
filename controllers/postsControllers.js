@@ -1,10 +1,6 @@
-const express = require("express");
-const { Sequelize } = require("sequelize");
-const Author = require("../models/authorModels");
 const Posts = require("../models/postsModel");
 const asyncHandler = require("../utils/AsyncHandler");
 const ApiError = require("../utils/ApiError");
-const sequelize = require("../index");
 
 const newPost = asyncHandler(async (req, res) => {
   const { author_id, title, content, image_path } = req.body;
@@ -83,4 +79,5 @@ const deletePost = asyncHandler(async (req, res) => {
   await postToDelete.destroy();
   res.json({ message: "Post deleted successfully" });
 });
+
 module.exports = [newPost, getPosts, getSinglePost, updatePost, deletePost];

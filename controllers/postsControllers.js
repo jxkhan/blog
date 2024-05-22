@@ -59,4 +59,26 @@ const getSinglePost = asyncHandler(async (req, res) => {
   
 });
 
-module.exports = [newPost, getPosts, getSinglePost];
+const updatePost = asyncHandler(async (req, res) => {
+
+  const post_id = req.params.id;
+    const postToUpdate = await Posts.findByPk(post_id);
+    if (!postToUpdate) {
+      //return res.status(404).json({ message: 'Post not found' });
+      throw new ApiError(404,"Post not found")
+    }
+    const { title, content } = req.body;
+    if (!title || !content) {
+      //return res.status(400).json({ message: 'Title and content are required' });
+      throw new ApiError(400,"Title and content are required")
+    }
+    postToUpdate.title = title;
+    postToUpdate.content = content;
+    await postToUpdate.save();
+    res.json(postToUpdate);
+    
+  
+
+
+})
+module.exports = [newPost, getPosts, getSinglePost,updatePost];

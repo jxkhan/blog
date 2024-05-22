@@ -1,6 +1,5 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../index");
-
 
 const Author = sequelize.define("Author", {
   id: {
@@ -17,13 +16,12 @@ const Author = sequelize.define("Author", {
   },
 });
 
- Author.sync()
+Author.sync()
   .then((data) => {
-    console.log("Author Table and Model synced Successfully");
+    console.log("Author Table and Model synced Successfully", data);
   })
   .catch((err) => {
-    console.log("Error syncing Author Table and Model !!  ");
+    console.log("Error syncing Author Table and Model !!", err);
   });
 
-
-module.exports = Author
+module.exports = Author;

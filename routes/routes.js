@@ -9,5 +9,7 @@ router.route("/posts").get(getPosts);
 
 router.route("/posts/:id").get(getSinglePost);
 
+router.route("/posts/:id").put(updatePost);
+
 
 module.exports = router;

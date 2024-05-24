@@ -1,6 +1,7 @@
 const Posts = require("../models/postsModel");
 const asyncHandler = require("../utils/AsyncHandler");
 const ApiError = require("../utils/ApiError");
+const Author = require("../models/authorModels");
 
 const newPost = asyncHandler(async (req, res) => {
   const { author_id, title, content, image_path } = req.body;
@@ -80,4 +81,19 @@ const deletePost = asyncHandler(async (req, res) => {
   res.json({ message: "Post deleted successfully" });
 });
 
-module.exports = [newPost, getPosts, getSinglePost, updatePost, deletePost];
+const newAuthor = asyncHandler(async (req, res) => {
+  const { name, bio } = req.body;
+  if (!name || !bio) {
+    throw new ApiError(400, "Name and bio are required");
+  }
+  const author = await Author.create({ name, bio });
+  res.json(author);
+});
+module.exports = [
+  newPost,
+  getPosts,
+  getSinglePost,
+  updatePost,
+  deletePost,
+  newAuthor,
+];

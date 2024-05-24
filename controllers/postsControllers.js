@@ -1,6 +1,7 @@
 const Posts = require("../models/postsModel");
 const asyncHandler = require("../utils/AsyncHandler");
 const ApiError = require("../utils/ApiError");
+const Author = require("../models/authorModels");
 
 const newPost = asyncHandler(async (req, res) => {
   const { author_id, title, content, image_path } = req.body;
@@ -35,7 +36,6 @@ const getPosts = asyncHandler(async (req, res) => {
   res.json(posts);
   if (!posts) {
     throw new ApiError(500, "Error fetching posts");
-    //res.status(500).json({ message: 'Error fetching posts' });
   }
 });
 
@@ -80,4 +80,30 @@ const deletePost = asyncHandler(async (req, res) => {
   res.json({ message: "Post deleted successfully" });
 });
 
-module.exports = [newPost, getPosts, getSinglePost, updatePost, deletePost];
+const newAuthor = asyncHandler(async (req, res) => {
+  const { name, bio } = req.body;
+  if (!name || !bio) {
+    throw new ApiError(400, "Name and bio are required");
+  }
+  const author = await Author.create({ name, bio });
+  res.json(author);
+});
+
+const getAuthors = asyncHandler(async (req, res) => {
+  console.log("Fetching Authors...");
+  const authors = await Author.findAll();
+  console.log("Authors fetched:", Author);
+  res.json(authors);
+  if (!authors) {
+    throw new ApiError(500, "Error fetching Authors");
+  }
+});
+module.exports = [
+  newPost,
+  getPosts,
+  getSinglePost,
+  updatePost,
+  deletePost,
+  newAuthor,
+  getAuthors,
+];

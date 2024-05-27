@@ -1,7 +1,9 @@
 const Posts = require("../models/postsModel");
+const Users = require("../models/userModels");
 const asyncHandler = require("../utils/AsyncHandler");
 const ApiError = require("../utils/ApiError");
 const Author = require("../models/authorModels");
+const bcrypt = require("bcrypt");
 
 const newPost = asyncHandler(async (req, res) => {
   const { author_id, title, content, image_path } = req.body;
@@ -98,6 +100,40 @@ const getAuthors = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Error fetching Authors");
   }
 });
+
+const userRegister = asyncHandler(async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    // Validate user data
+    if (!username || !email || !password) {
+      throw new ApiError(400, "Please provide all required fields");
+    }
+
+    // Check if user already exists
+    const existingUser = await Users.findOne({ where: { email } });
+    if (existingUser) {
+      throw new ApiError(400, "User Already exists");
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const user = await Users.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    // Return success message or created user's details
+    res.json({ message: "User created successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 module.exports = [
   newPost,
   getPosts,
@@ -106,4 +142,5 @@ module.exports = [
   deletePost,
   newAuthor,
   getAuthors,
+  userRegister,
 ];

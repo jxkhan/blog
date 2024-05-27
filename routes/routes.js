@@ -8,6 +8,7 @@ const [
   deletePost,
   newAuthor,
   getAuthors,
+  userRegister,
 ] = require("../controllers/postsControllers");
 //Posts end points
 router.route("/posts").post(newPost);
@@ -24,5 +25,7 @@ router.route("/posts/:id").delete(deletePost);
 router.route("/author").post(newAuthor);
 
 router.route("/author").get(getAuthors);
+
+router.route("/users").post(userRegister);
 
 module.exports = router;

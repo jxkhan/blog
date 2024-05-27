@@ -4,6 +4,7 @@ const asyncHandler = require("../utils/AsyncHandler");
 const ApiError = require("../utils/ApiError");
 const Author = require("../models/authorModels");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const newPost = asyncHandler(async (req, res) => {
   const { author_id, title, content, image_path } = req.body;
@@ -48,9 +49,9 @@ const getSinglePost = asyncHandler(async (req, res) => {
   if (post) {
     res.json(post);
   } else {
-    //throw new ApiError(404, "Post not found")
-    console.error(`Post with ID ${post_id} not found`);
-    return res.status(404).json({ message: "Error fetching post" });
+    // console.error(`Post with ID ${post_id} not found`);
+    //return res.status(404).json({ message: "Error fetching post" });
+    throw new ApiError(404, "Post not found");
   }
 });
 
@@ -134,6 +135,39 @@ const userRegister = asyncHandler(async (req, res) => {
   }
 });
 
+const userLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validate user data
+  if (!email || !password) {
+    throw new ApiError(400, "Please provide all required fields");
+  }
+
+  // Find user by email
+  const user = await Users.findOne({ where: { email } });
+  if (!user) {
+    throw new ApiError(401, "Invalid email or password");
+  }
+
+  // Compare hashed password
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    throw new ApiError(401, "Invalid email or password");
+  }
+
+  // Generate authentication token
+  const token = jwt.sign({ userId: user.id }, "your_secret_key", {
+    expiresIn: "1h",
+  });
+
+  // Return success message or authentication token
+  res.json({ message: "User logged in successfully", token });
+  {
+    //console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 module.exports = [
   newPost,
   getPosts,
@@ -143,4 +177,5 @@ module.exports = [
   newAuthor,
   getAuthors,
   userRegister,
+  userLogin,
 ];

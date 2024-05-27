@@ -9,6 +9,7 @@ const [
   newAuthor,
   getAuthors,
   userRegister,
+  userLogin,
 ] = require("../controllers/postsControllers");
 //Posts end points
 router.route("/posts").post(newPost);
@@ -27,5 +28,7 @@ router.route("/author").post(newAuthor);
 router.route("/author").get(getAuthors);
 
 router.route("/users").post(userRegister);
+
+router.route("/login").post(userLogin);
 
 module.exports = router;

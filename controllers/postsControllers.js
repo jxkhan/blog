@@ -5,6 +5,7 @@ const ApiError = require("../utils/ApiError");
 const Author = require("../models/authorModels");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Comments = require("../models/commentModel");
 
 const newPost = asyncHandler(async (req, res) => {
   const { author_id, title, content, image_path } = req.body;
@@ -98,7 +99,7 @@ const getAuthors = asyncHandler(async (req, res) => {
   console.log("Authors fetched:", Author);
   res.json(authors);
   if (!authors) {
-    throw new ApiError(500, "Error fetching Authors");
+    throw new ApiError(404, "Error fetching Authors");
   }
 });
 
@@ -168,6 +169,26 @@ const userLogin = asyncHandler(async (req, res) => {
   }
 });
 
+const addComment = asyncHandler(async (req, res) => {
+  const { content, post_id, user_id } = req.body;
+
+  // Validate the data
+  if (!content || !post_id || !user_id) {
+    return res
+      .status(400)
+      .json({ message: "Please provide all required fields" });
+  }
+
+  // Create a new comment
+  try {
+    const comment = await Comments.create({ content, post_id, user_id });
+    res.json(comment);
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Internal Server Error");
+  }
+});
+
 module.exports = [
   newPost,
   getPosts,
@@ -178,4 +199,5 @@ module.exports = [
   getAuthors,
   userRegister,
   userLogin,
+  addComment,
 ];

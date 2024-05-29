@@ -43,14 +43,14 @@ const Posts = sequelize.define(
       type: Sequelize.DATE,
       allowNull: false,
       defaultValue: Sequelize.literal(
-        "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+        "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
       ),
     },
   },
 
   {
     timestamps: false,
-  },
+  }
 );
 
 Author.hasMany(Posts, { foreignKey: "author_id" });

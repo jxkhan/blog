@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../index");
 
-const Author = sequelize.define("Author", {
+const Author = sequelize.define("author", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
